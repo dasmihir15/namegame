@@ -4,6 +4,7 @@ var board = {};
 var sketch = {};
 
 var word = "PRANI";
+
 board.spacesize = 10
 board.minBoxGridSize = 6;
 board.minGridPointLength = 6;
@@ -137,6 +138,7 @@ function paint(ctx) {
     var curX = board.topleftX;
     var curY = board.topleftY;
     const cellsize = board.gridPointLength;
+    var colorScheme = calculateRandom(0,5);
     [...word].forEach((ch) => {
         var arr = bitmap[ch + ""];
         for (var i = 0; i < arr.length; i++) {
@@ -162,7 +164,7 @@ function paint(ctx) {
                     // });
                     
 
-                    ctx.fillStyle = calculateFillStyle();
+                    ctx.fillStyle = calculateFillStyle(colorScheme);
                     ctx.fillRect(curX + (i*cellsize), curY + (j*cellsize), cellsize, cellsize);
                 }
             }
@@ -170,11 +172,10 @@ function paint(ctx) {
         curX = curX + board.cellcount * cellsize + board.spacesize;
     })
 
-    function calculateFillStyle(){
+    function calculateFillStyle(colorScheme){
         var red = 0;
         var blue = 0;
         var green = 0;
-        var colorScheme = calculateRandom(0,4);
         if(colorScheme == 0){
             red = 0;
             green = 0;
