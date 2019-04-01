@@ -1,0 +1,57 @@
+<html>
+
+<head>
+    <style type="text/css">
+        .canvas {
+            border: 1px solid black;
+            height: 500px;
+            width: 1500px;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+
+        .heading {
+            font-size: 24px;
+            text-align: center; 
+        }
+        .default-heading{
+            background: linear-gradient(blue,green);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .redraw-heading{
+            background: linear-gradient(red,orange);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #refresh{
+            float: right;
+            border-radius: 5px;
+            margin-right: 5px;
+            padding: 2px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <br />
+    <div class="heading default-heading" id="heading">
+        <b>Drag and create a box inside the canvas to see the magic</b>
+    </div>
+    <br />
+    <div>
+        <canvas class="canvas" id="canvas" width="1500px" height="500px">
+
+        </canvas>
+    </div>
+    <br/>
+    <!-- <button id="refresh">refresh</button> -->
+    <script type="text/javascript" src="bitmap.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+
+</html>
