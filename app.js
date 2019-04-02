@@ -10,6 +10,8 @@ board.minBoxGridSize = 6;
 board.minGridPointLength = 6;
 board.paddingTolerance = 5;
 
+var ismousedown = false;
+
 const HEADING = "Drag and create a box inside the canvas to see the magic";
 const REDRAW_HEADING = "The box is too small to work out. Please try again";
 
@@ -28,35 +30,42 @@ function clickEventHandler() {
 }
 
 function mouseDownEventHandler(e) {
-    console.log(e.clientX + " " + e.clientY);
-    board.topleftX = e.clientX;
-    board.topleftY = e.clientY;
-    // clear the board
-    var canvas = document.getElementById("canvas");
-    if (canvas.getContext) {
-        var ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        var rect = canvas.getBoundingClientRect();
-        board.topleftX = (board.topleftX - rect.left) / (rect.right - rect.left) * canvas.width;
-        board.topleftY = (board.topleftY - rect.top) / (rect.bottom - rect.top) * canvas.height;
+
+    if (!ismousedown) {
+        ismousedown = true;
+        console.log(e.clientX + " " + e.clientY);
+        board.topleftX = e.clientX;
+        board.topleftY = e.clientY;
+        // clear the board
+        var canvas = document.getElementById("canvas");
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var rect = canvas.getBoundingClientRect();
+            board.topleftX = (board.topleftX - rect.left) / (rect.right - rect.left) * canvas.width;
+            board.topleftY = (board.topleftY - rect.top) / (rect.bottom - rect.top) * canvas.height;
+        }
     }
 }
 
 function mouseUpEventHandler(e) {
-    console.log(e.clientX + " " + e.clientY);
-    board.bottomrightX = e.clientX;
-    board.bottomrightY = e.clientY;
-    // draw the rect
-    var canvas = document.getElementById("canvas");
-    if (canvas.getContext) {
-        var ctx = canvas.getContext('2d');
-        strokeBoard(ctx);
-        createBitmapObject();
-        if (board.isPossible) {
-            calculatePaths();
-            paint(ctx);
-        } else {
-            displayRedrawMessage();
+    if (ismousedown) {
+        ismousedown = false;
+        console.log(e.clientX + " " + e.clientY);
+        board.bottomrightX = e.clientX;
+        board.bottomrightY = e.clientY;
+        // draw the rect
+        var canvas = document.getElementById("canvas");
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+            strokeBoard(ctx);
+            createBitmapObject();
+            if (board.isPossible) {
+                calculatePaths();
+                paint(ctx);
+            } else {
+                displayRedrawMessage();
+            }
         }
     }
 }
@@ -138,7 +147,7 @@ function paint(ctx) {
     var curX = board.topleftX;
     var curY = board.topleftY;
     const cellsize = board.gridPointLength;
-    var colorScheme = calculateRandom(0,5);
+    var colorScheme = calculateRandom(0, 5);
     [...word].forEach((ch) => {
         var arr = bitmap[ch + ""];
         for (var i = 0; i < arr.length; i++) {
@@ -148,10 +157,10 @@ function paint(ctx) {
                     //noop();
                     //paintCell(ctx, curX, curY, i, j, cellsize);
                     // window.requestAnimationFrame(() => {
-                        
+
                     //         ctx.fillStyle = "black";
                     //         ctx.fillRect(curX + (i * cellsize), curY + (j * cellsize), cellsize, cellsize);
-                        
+
                     // });
                     // var context = ctx;
                     // var currentX = curX;
@@ -162,46 +171,46 @@ function paint(ctx) {
                     // window.requestAnimationFrame(() => {
                     //     paintCell(context, currentX, currentY, i1, j1, cs);
                     // });
-                    
+
 
                     ctx.fillStyle = calculateFillStyle(colorScheme);
-                    ctx.fillRect(curX + (i*cellsize), curY + (j*cellsize), cellsize, cellsize);
+                    ctx.fillRect(curX + (i * cellsize), curY + (j * cellsize), cellsize, cellsize);
                 }
             }
         }
         curX = curX + board.cellcount * cellsize + board.spacesize;
     })
 
-    function calculateFillStyle(colorScheme){
+    function calculateFillStyle(colorScheme) {
         var red = 0;
         var blue = 0;
         var green = 0;
-        if(colorScheme == 0){
+        if (colorScheme == 0) {
             red = 0;
             green = 0;
             blue = 0;
-        } else if(colorScheme == 1){
-            red = calculateRandom(0,255);
-            green = calculateRandom(0,30);
-            blue = calculateRandom(0,30);
-        } else if(colorScheme == 2){
-            red = calculateRandom(0,130);
-            green = calculateRandom(10,230);
-            blue = calculateRandom(0,100);
-        } else if(colorScheme == 3){
-            red = calculateRandom(0,80);
-            green = calculateRandom(0,30);
-            blue = calculateRandom(0,250);
-        }else{
-            red = calculateRandom(0,255);
-            green = calculateRandom(0,255);
-            blue = calculateRandom(0,255);
+        } else if (colorScheme == 1) {
+            red = calculateRandom(0, 255);
+            green = calculateRandom(0, 30);
+            blue = calculateRandom(0, 30);
+        } else if (colorScheme == 2) {
+            red = calculateRandom(0, 130);
+            green = calculateRandom(10, 230);
+            blue = calculateRandom(0, 100);
+        } else if (colorScheme == 3) {
+            red = calculateRandom(0, 80);
+            green = calculateRandom(0, 30);
+            blue = calculateRandom(0, 250);
+        } else {
+            red = calculateRandom(0, 255);
+            green = calculateRandom(0, 255);
+            blue = calculateRandom(0, 255);
         }
         var fillstyle = `rgb(${red},${blue},${green})`;
         return fillstyle;
     }
 
-    function calculateRandom(upperLimit, lowerLimit){
+    function calculateRandom(upperLimit, lowerLimit) {
         return Math.floor(Math.random() * (upperLimit - lowerLimit)) + lowerLimit;
     }
 
@@ -215,34 +224,34 @@ function paint(ctx) {
     // sketch.cellsize = cellsize;
     // sketch.ctx = ctx;
     // window.requestAnimationFrame(draw);
-    
+
 
 }
 
-function draw(){
-    if(sketch.arr[sketch.i][sketch.j] == 1){
+function draw() {
+    if (sketch.arr[sketch.i][sketch.j] == 1) {
         console.log("printed");
         sketch.ctx.fillStyle = "black";
-        sketch.ctx.fillRect(sketch.curX + (sketch.i*sketch.cellsize), sketch.curY + (sketch.j * sketch.cellsize), sketch.cellsize, sketch.cellsize);
+        sketch.ctx.fillRect(sketch.curX + (sketch.i * sketch.cellsize), sketch.curY + (sketch.j * sketch.cellsize), sketch.cellsize, sketch.cellsize);
     }
 
-    if(sketch.j < sketch.maxj){
+    if (sketch.j < sketch.maxj) {
         sketch.j = sketch.j + 1;
         window.requestAnimationFrame(draw);
-    }else if(sketch.i < sketch.maxi){
+    } else if (sketch.i < sketch.maxi) {
         sketch.i = sketch.i + 1;
         sketch.j = 0;
         window.requestAnimationFrame(draw);
-    }else if(sketch.ch < sketch.maxch){
+    } else if (sketch.ch < sketch.maxch) {
         sketch.ch = sketch.ch + 1;
         sketch.i = 0;
         sketch.j = 0;
         sketch.curX = sketch.curX + board.cellcount * sketch.cellsize + board.spacesize;
-        sketch.arr = bitmap[[...word][sketch.ch]+""];
+        sketch.arr = bitmap[[...word][sketch.ch] + ""];
         window.requestAnimationFrame(draw);
     }
 
-    
+
 }
 
 function paintCell(ctx, curX, curY, i, j, cellsize) {
